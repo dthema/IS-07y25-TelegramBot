@@ -12,8 +12,7 @@ repositories {
 
 dependencies {
     implementation("dev.inmo:tgbotapi:7.0.1")
-    implementation("org.jsoup:jsoup:1.15.4")
-    implementation("org.seleniumhq.selenium:selenium-java:4.8.3")
+    implementation("com.github.seratch:notion-sdk-jvm-core:1.8.0")
 }
 
 tasks.test {

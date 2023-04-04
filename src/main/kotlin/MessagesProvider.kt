@@ -5,7 +5,7 @@ object MessagesProvider {
     private fun parseDeadlines(deadlines: List<Deadline>): String {
         val stringBuilder = StringBuilder()
         deadlines.forEach { deadline ->
-            stringBuilder.append("\n${deadline.subject}: \t${deadline.name}. Дедлайн: ${deadline.date.format(formatter)}")
+            stringBuilder.append("\n${deadline.subject}: \t${deadline.name}. Дедлайн: ${deadline.date?.format(formatter) ?: "Неизвестен"}")
             if (deadline.extraInfo.isNotBlank())
                 stringBuilder.append(". Доп. инфа: ${deadline.extraInfo}")
         }

@@ -7,11 +7,13 @@ import dev.inmo.tgbotapi.extensions.behaviour_builder.triggers_handling.onComman
 import dev.inmo.tgbotapi.types.BotCommand
 import dev.inmo.tgbotapi.types.message.MarkdownV2ParseMode
 import dev.inmo.tgbotapi.utils.regular
+import io.ktor.util.date.*
 
 private const val NOTION_LINK = "https://dthema.notion.site/M32071-c7196be220d84ba5a0a6e64d4d9003ee"
 
 suspend fun main(args: Array<String>) {
     val bot = telegramBot(args.first())
+    val deadlinesProvider = DeadlinesProvider(args[1])
 
     print(bot.getMe())
 
@@ -21,17 +23,13 @@ suspend fun main(args: Array<String>) {
         }
 
         onCommand("week_deadlines") {
-            val text = MessagesProvider.parseWeekDeadlines(DeadlinesProvider.getWeekDeadlines())
-            reply(it) {
-                regular(text)
-            }
+            val text = MessagesProvider.parseWeekDeadlines(deadlinesProvider.getWeekDeadlines())
+            reply(it) { regular(text) }
         }
 
         onCommand("month_deadlines") {
-            val text = MessagesProvider.parseMonthDeadlines(DeadlinesProvider.getMonthDeadlines())
-            reply(it) {
-                regular(text)
-            }
+            val text = MessagesProvider.parseMonthDeadlines(deadlinesProvider.getMonthDeadlines())
+            reply(it) { regular(text) }
         }
 
         setMyCommands(
