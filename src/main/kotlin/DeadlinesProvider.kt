@@ -36,7 +36,7 @@ class DeadlinesProvider(notionToken: String) {
                 }
         }
 
-        return deadlines
+        return deadlines.sortedBy { it.date }
     }
 
     fun getMonthDeadlines(): List<Deadline> {
