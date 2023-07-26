@@ -7,11 +7,17 @@ import dev.inmo.tgbotapi.types.BotCommand
 import dev.inmo.tgbotapi.types.message.MarkdownV2ParseMode
 import dev.inmo.tgbotapi.utils.regular
 import io.github.cdimascio.dotenv.dotenv
+import jobs.Jobs
+import providers.DeadlinesProvider
+import providers.MessagesProvider
 
 private const val NOTION_LINK = "https://dthema.notion.site/M32071-c7196be220d84ba5a0a6e64d4d9003ee"
 
 suspend fun main() {
     val dotenv = dotenv()
+
+    val jobs = Jobs()
+    jobs.startAllJobs()
 
     val bot = telegramBot(dotenv["TELEGRAM_TOKEN"])
     val deadlinesProvider = DeadlinesProvider(dotenv["NOTION_TOKEN"])
@@ -31,10 +37,22 @@ suspend fun main() {
             reply(it) { regular(text) }
         }
 
+        onCommand("top_dicks") {
+            println("top pipis")
+        }
+
+        onCommand("dick") {
+            println("virastil pipisu")
+        }
+
         setMyCommands(
             BotCommand("notion", "Ссылка на ноушен группы"),
             BotCommand("month_deadlines", "Дедлайны на текущий месяц"),
-            BotCommand("week_deadlines", "Дедлайны на текущую неделю")
+            BotCommand("week_deadlines", "Дедлайны на текущую неделю"),
+            BotCommand("top_dicks", "Топ хуев группы"),
+            BotCommand("dick", "Вырастить пиписю")
         )
     }.join()
+
+    jobs.stopAllJobs()
 }

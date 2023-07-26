@@ -1,8 +1,16 @@
+package providers
+
+import models.Deadline
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.time.format.DateTimeFormatter
 
 object MessagesProvider {
     private val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+    private val logger: Logger = LoggerFactory.getLogger(MessagesProvider::class.java)
+
     private fun parseDeadlines(deadlines: List<Deadline>): String {
+        logger.info("Trying to parse deadlines")
         val stringBuilder = StringBuilder()
         deadlines.forEach { deadline ->
             stringBuilder.append("\n${deadline.subject}: \t${deadline.name}. Дедлайн: ${deadline.date?.format(formatter) ?: "Неизвестен"}")
