@@ -1,5 +1,6 @@
 package jobs
 
+import org.koin.java.KoinJavaComponent.inject
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import providers.DeadlinesProvider
@@ -7,21 +8,16 @@ import providers.DeadlinesProvider
 class Jobs(
     private val logger: Logger = LoggerFactory.getLogger(DeadlinesProvider::class.java)
 ) {
-    private val jobsList = mutableListOf<ScheduleJob>(
-        CleanPipisaCacheJob()
-    )
+
+    private val cleanPipisaCacheJob: CleanPipisaCacheJob by inject(CleanPipisaCacheJob::class.java)
 
     fun startAllJobs() {
         logger.info("Starting all jobs")
-        for (job in jobsList) {
-            job.start()
-        }
+        cleanPipisaCacheJob.start()
     }
 
     fun stopAllJobs() {
         logger.info("Stopping all jobs")
-        for (job in jobsList) {
-            job.stop()
-        }
+        cleanPipisaCacheJob.stop()
     }
 }

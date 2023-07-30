@@ -4,25 +4,23 @@ import models.Deadline
 import notion.api.v1.NotionClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import utils.Config.NotionConfig.deadlinesDbId
 import java.time.LocalDate
+import java.time.LocalDate.now
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatter.ofPattern
 
 class DeadlinesProvider(
     notionToken: String,
-    private val logger: Logger = LoggerFactory.getLogger(DeadlinesProvider::class.java)
+    private var notionClient: NotionClient = NotionClient(token = notionToken),
+    private val logger: Logger = LoggerFactory.getLogger(DeadlinesProvider::class.java),
 ) {
-    private var notionClient: NotionClient
-    private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSz")
+    private val dateTimeFormatter = ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSz")
 
-    init {
-        notionClient = NotionClient(token = notionToken)
-    }
-
-    private fun getAllDeadlines(): List<Deadline> {
+    private fun allDeadlines(): List<Deadline> {
         val deadlines = ArrayList<Deadline>()
         notionClient.use { client ->
-            client.queryDatabase(databaseId = "efe920cb822b4e6ba3344834f406dd7b")
+            client.queryDatabase(deadlinesDbId)
                 .results
                 .stream()
                 .forEach { page ->
@@ -50,24 +48,24 @@ class DeadlinesProvider(
         return deadlines.sortedBy { it.date }
     }
 
-    fun getMonthDeadlines(): List<Deadline> {
+    fun monthDeadlines(): List<Deadline> {
         logger.info("Trying to get month deadlines")
 
-        val currentDate = LocalDate.now()
+        val currentDate = now()
         val monthFirstDay = currentDate.minusDays(currentDate.dayOfMonth.toLong())
         val monthLastDay = monthFirstDay.plusMonths(1).plusDays(1)
-        return getAllDeadlines().stream()
+        return allDeadlines().stream()
             .filter { it.date != null && (it.date.isAfter(monthFirstDay) && it.date.isBefore(monthLastDay)) }
             .toList()
     }
 
-    fun getWeekDeadlines(): List<Deadline> {
+    fun weekDeadlines(): List<Deadline> {
         logger.info("Trying to get week deadlines")
 
-        val currentDate = LocalDate.now()
+        val currentDate = now()
         val weekFirstDay = currentDate.minusDays(currentDate.dayOfWeek.value.toLong())
         val weekLastDay = weekFirstDay.plusWeeks(1).plusDays(1)
-        return getAllDeadlines().stream()
+        return allDeadlines().stream()
             .filter { it.date != null && (it.date.isAfter(weekFirstDay) && it.date.isBefore(weekLastDay)) }
             .toList()
     }

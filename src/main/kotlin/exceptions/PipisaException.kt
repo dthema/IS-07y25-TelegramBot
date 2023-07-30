@@ -1,4 +1,3 @@
 package exceptions
 
-class PipisaException(message: String?) : Exception(message) {
-}
+class PipisaException(message: String?) : Exception(message)

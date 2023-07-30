@@ -16,10 +16,10 @@ abstract class ScheduleJob(
         isRunning = true
         jobThread = Thread {
             try {
-                Thread.sleep(getInitialDelayInMillis())
+                Thread.sleep(initialDelayInMillis())
                 while (isRunning) {
                     doWork()
-                    Thread.sleep(getIntervalInMillis())
+                    Thread.sleep(intervalInMillis())
                 }
             } catch (e: Exception) {
                 logger.error("An error occurred while executing the job: ${e.message}", e)
@@ -34,6 +34,6 @@ abstract class ScheduleJob(
         jobThread?.join()
     }
 
-    abstract fun getIntervalInMillis(): Long
-    abstract fun getInitialDelayInMillis(): Long
+    abstract fun intervalInMillis(): Long
+    abstract fun initialDelayInMillis(): Long
 }
