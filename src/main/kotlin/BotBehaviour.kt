@@ -9,6 +9,7 @@ import dev.inmo.tgbotapi.types.message.MarkdownV2ParseMode
 import dev.inmo.tgbotapi.utils.RiskFeature
 import dev.inmo.tgbotapi.utils.bold
 import dev.inmo.tgbotapi.utils.regular
+
 import exceptions.PipisaException
 import providers.DeadlinesProvider
 import providers.MessagesProvider.parseIncreaseDick
@@ -40,6 +41,16 @@ class BotBehaviour(
                 reply(it) { bold(text) }
             }
 
+            onCommand("week_from_today_deadlines") {
+                val text = parseWeekDeadlines(deadlinesProvider.weekFromTodayDeadlines())
+                reply(it) { regular(text) }
+            }
+
+            onCommand("month_from_today_deadlines") {
+                val text = parseMonthDeadlines(deadlinesProvider.monthFromTodayDeadlines())
+                reply(it) { bold(text) }
+            }
+
             onCommand("top_dicks") {
                 val text = parseTopDicks(pipisaService.topDicks(it.chat.id.chatId))
                 reply(it) { bold(text) }
@@ -54,6 +65,8 @@ class BotBehaviour(
                 BotCommand("notion", "Ссылка на ноушен группы"),
                 BotCommand("month_deadlines", "Дедлайны на текущий месяц"),
                 BotCommand("week_deadlines", "Дедлайны на текущую неделю"),
+                BotCommand("month_from_today_deadlines", "Дедлайны на месяц вперед"),
+                BotCommand("week_from_today_deadlines", "Дедлайны на неделю вперед"),
                 BotCommand("top_dicks", "Топ хуев группы"),
                 BotCommand("increase_dick", "Вырастить пиписю")
             )
