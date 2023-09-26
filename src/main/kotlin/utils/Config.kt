@@ -23,10 +23,13 @@ object Config {
             dotEnv["DEADLINES_DB_ID"] ?: error("DEADLINES_DB_ID not found in environment variables")
     }
 
+    object PipisaConfig {
+        val pipisaEnable: Boolean = dotEnv["PIPISA_ENABLE"]?.toBoolean() ?: error("PIPISA_ENABLE not found in environment variables")
+    }
 }
 
 fun configureDatabase() {
-    val hikariConfig = HikariConfig("db.properties")
+    val hikariConfig = HikariConfig("/db.properties")
     val dataSource = HikariDataSource(hikariConfig)
     defaultDatabase = Database.connect(dataSource)
 

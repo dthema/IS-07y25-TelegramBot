@@ -18,6 +18,7 @@ import providers.MessagesProvider.parseTopDicks
 import providers.MessagesProvider.parseWeekDeadlines
 import service.PipisaService
 import utils.Config.NotionConfig.notionUrl
+import utils.Config.PipisaConfig.pipisaEnable
 
 class BotBehaviour(
     private val bot: TelegramBot,
@@ -51,25 +52,34 @@ class BotBehaviour(
                 reply(it) { bold(text) }
             }
 
-            onCommand("top_dicks") {
-                val text = parseTopDicks(pipisaService.topDicks(it.chat.id.chatId))
-                reply(it) { bold(text) }
-            }
+            if (pipisaEnable) {
+                onCommand("top_dicks") {
+                    val text = parseTopDicks(pipisaService.topDicks(it.chat.id.chatId))
+                    reply(it) { bold(text) }
+                }
 
-            onCommand("increase_dick") {
-                val text = parseIncreaseDick(it.from ?: throw PipisaException("tg user not found"), it.chat.id.chatId)
-                reply(it) { bold(text) }
-            }
+                onCommand("increase_dick") {
+                    val text =
+                        parseIncreaseDick(it.from ?: throw PipisaException("tg user not found"), it.chat.id.chatId)
+                    reply(it) { bold(text) }
+                }
 
-            setMyCommands(
-                BotCommand("notion", "Ссылка на ноушен группы"),
-                BotCommand("month_deadlines", "Дедлайны на текущий месяц"),
-                BotCommand("week_deadlines", "Дедлайны на текущую неделю"),
-                BotCommand("month_from_today_deadlines", "Дедлайны на месяц вперед"),
-                BotCommand("week_from_today_deadlines", "Дедлайны на неделю вперед"),
-                BotCommand("top_dicks", "Топ хуев группы"),
-                BotCommand("increase_dick", "Вырастить пиписю")
-            )
+                setMyCommands(
+                    BotCommand("top_dicks", "Топ хуев группы"),
+                    BotCommand("increase_dick", "Вырастить пиписю"),
+                    *getBaseCommands().toTypedArray()
+                )
+            } else {
+                setMyCommands(getBaseCommands())
+            }
         }.join()
     }
+
+    fun getBaseCommands(): List<BotCommand> = listOf(
+        BotCommand("notion", "Ссылка на ноушен группы"),
+        BotCommand("month_deadlines", "Дедлайны на текущий месяц"),
+        BotCommand("week_deadlines", "Дедлайны на текущую неделю"),
+        BotCommand("month_from_today_deadlines", "Дедлайны на месяц вперед"),
+        BotCommand("week_from_today_deadlines", "Дедлайны на неделю вперед")
+    )
 }
